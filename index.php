@@ -1,67 +1,70 @@
 <?php
 
-class Employee
+class Page
 {
-    private $name;
-    private $age;    
-    public $salary;
+    private string $name;
+    protected string $template;
 
-    public function __construct($name, $age, $salary)
+    public function __construct()
     {
-        $this->name = $name;
-        $this->age = $age;
-        $this->salary = $salary;
+        $this->name = "page";
+        $this->template = "<div><p>Добро пожаловать на главную страницу моего блога</p></div>";
     }
 
-    public function getName()
+    public function render(): void
+    {
+        echo $this->template;
+    }
+
+    public function getName(): string
     {
         return $this->name;
     }
+}
 
-    public function getSalary()
+class BlogPage extends Page
+{
+    public function __construct()
     {
-        return $this->salary;
+        $this->template = '
+        <div>
+            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+                <h3>Выпуск 1</h3>
+                <p>Гуляю по лесу</p>
+            </div>
+            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+                <h3>Выпуск 2</h3>
+                <p>Сижу в ресторане и размышляю</p>
+            </div>
+            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+                <h3>Выпуск 3</h3>
+                <p>Играю в теннис</p>
+            </div>
+        </div>';
     }
 
-    private function checkAge($newAge)
+    public function getName(): string
     {
-        return $newAge >= 18;
-    }
-
-    public function setAge($newAge)
-    {
-        if ($this->checkAge($newAge)) {
-            $this->age = $newAge;
-            echo "Возраст успешно изменен на {$newAge}.<br>";
-        } else {
-            echo "Вам работать в нашей компании еще рано.<br>";
-        }
-    }
-
-    public function getAge()
-    {
-        return $this->age;
+        return "blog";
     }
 }
 
-$employee1 = new Employee("Маша", 25, 58000);
-$employee2 = new Employee("Даша", 35, 78000);
+echo '<a href="?page=page">Страница Page</a> | ';
+echo '<a href="?page=blog">Страница Blog</a><br><br>';
 
-$sumSalary = $employee1->getSalary() + $employee2->getSalary();
-echo "Сумма зарплат: {$sumSalary}<br>";
-
-$sumAge = $employee1->getAge() + $employee2->getAge();
-echo "Сумма возрастов: {$sumAge}<br>";
-
-echo "Имя первого работника: " . $employee1->getName() . "<br>";
-echo "Возраст первого работника: " . $employee1->getAge() . "<br>";
-echo "Зарплата первого работника: " . $employee1->getSalary() . "<br>";
-
-echo "Сумма зарплат через getSalary(): " . 
-     ($employee1->getSalary() + $employee2->getSalary()) . "<br>";
-
-$employee1->setAge(21);  
-$employee1->setAge(17); 
-
-echo "Текущий возраст работника 1: " . $employee1->getAge() . "<br>";
-echo "Текущий возраст работника 2: " . $employee2->getAge() . "<br>";
+if (isset($_GET['page'])) {
+    $pageParam = $_GET['page'];
+    
+    if ($pageParam === 'page') {
+        $page = new Page();
+        $page->render();
+    } elseif ($pageParam === 'blog') {
+        $page = new BlogPage();
+        $page->render();
+    } else {
+        echo "<p>Страница не найдена</p>";
+    }
+} else {
+    $page = new Page();
+    $page->render();
+}
