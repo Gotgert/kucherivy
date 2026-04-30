@@ -1,36 +1,67 @@
 <?php
-// 1
-try {
-    $file = fopen("nonexistent_file.txt", "r");
-    if (!$file) {
-        throw new Exception("Не удалось открыть файл 'nonexistent_file.txt'");
+
+class Employee
+{
+    private $name;
+    private $age;    
+    public $salary;
+
+    public function __construct($name, $age, $salary)
+    {
+        $this->name = $name;
+        $this->age = $age;
+        $this->salary = $salary;
     }
-    fclose($file);
-} catch (Exception $ex) {
-    echo "1. Исключение: " . $ex->getMessage() . "<br>";
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getSalary()
+    {
+        return $this->salary;
+    }
+
+    private function checkAge($newAge)
+    {
+        return $newAge >= 18;
+    }
+
+    public function setAge($newAge)
+    {
+        if ($this->checkAge($newAge)) {
+            $this->age = $newAge;
+            echo "Возраст успешно изменен на {$newAge}.<br>";
+        } else {
+            echo "Вам работать в нашей компании еще рано.<br>";
+        }
+    }
+
+    public function getAge()
+    {
+        return $this->age;
+    }
 }
 
-// 2
-try {
-    $divisor = 0;
-    if ($divisor == 0) {
-        throw new Exception("Деление на ноль");
-    }
-    $result = 10 / $divisor;
-} catch (Exception $ex) {
-    $logMessage = date('Y-m-d H:i:s') . " - Исключение: " . $ex->getMessage() . "\n";
-    file_put_contents("log.txt", $logMessage, FILE_APPEND);
-    echo "2. Исключение записано в log.txt: " . $ex->getMessage() . "<br>";
-}
+$employee1 = new Employee("Маша", 25, 58000);
+$employee2 = new Employee("Даша", 35, 78000);
 
-// 3
-try {
-    $countries = ['Spain' => 'Madrid', 'Russia' => 'Moscow'];
-    $key = 'Germany';
-    if (!array_key_exists($key, $countries)) {
-        throw new Exception("Ключ '$key' не существует в массиве");
-    }
-    echo $countries[$key];
-} catch (Exception $ex) {
-    echo "3. Исключение: " . $ex->getMessage() . "<br>";
-}
+$sumSalary = $employee1->getSalary() + $employee2->getSalary();
+echo "Сумма зарплат: {$sumSalary}<br>";
+
+$sumAge = $employee1->getAge() + $employee2->getAge();
+echo "Сумма возрастов: {$sumAge}<br>";
+
+echo "Имя первого работника: " . $employee1->getName() . "<br>";
+echo "Возраст первого работника: " . $employee1->getAge() . "<br>";
+echo "Зарплата первого работника: " . $employee1->getSalary() . "<br>";
+
+echo "Сумма зарплат через getSalary(): " . 
+     ($employee1->getSalary() + $employee2->getSalary()) . "<br>";
+
+$employee1->setAge(21);  
+$employee1->setAge(17); 
+
+echo "Текущий возраст работника 1: " . $employee1->getAge() . "<br>";
+echo "Текущий возраст работника 2: " . $employee2->getAge() . "<br>";
