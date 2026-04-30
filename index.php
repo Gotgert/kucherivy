@@ -1,32 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Регистрация</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>parapa</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="assets/images/fav.png">
 </head>
 <body>
-    <h1>Форма регистрации</h1>
+    <div>
+    <h2>Калькулятор</h2>
     <form action="action.php" method="post">
-        <label for="username">Имя:</label>
-        <input type="text" id="username" name="username" placeholder="Введите имя" required><br>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" placeholder="Введите email" required><br>
-
-        <label for="password">Пароль:</label>
-        <input type="password" id="password" name="password" placeholder="Введите пароль" required><br>
-
-        <label for="password">Подтвердите пароль:</label>
-        <input type="password" id="password" name="password" placeholder="Введите пароль" required><br>
-
-        <label for="gender">Пол:</label>
-        <select id="gender" name="gender">
-            <option value="">-- Выберите пол --</option>
-            <option value="male">Мужской</option>
-            <option value="female">Женский</option>
-        </select><br>
-
-        <input type="submit" value="Отправить">
+        <input type="number" name="num1" placeholder="Число 1" step="any" required><br>
+        <input type="number" name="num2" placeholder="Число 2" step="any" required><br>
+        
+        <div>
+            <input type="submit" name="operation" value="+">
+            <input type="submit" name="operation" value="-">
+            <input type="submit" name="operation" value="*">
+            <input type="submit" name="operation" value="/">
+        </div>
     </form>
+
+    <?php
+    session_start();
+    if (isset($_SESSION['calc_result'])) {
+        echo '<div>Результат: ' . $_SESSION['calc_result'] . '</div>';
+        unset($_SESSION['calc_result']);
+    }
+    if (isset($_SESSION['calc_error'])) {
+        echo '<div>' . $_SESSION['calc_error'] . '</div>';
+        unset($_SESSION['calc_error']);
+    }
+    ?>
+</div>
 </body>
 </html>

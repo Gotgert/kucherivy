@@ -1,29 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Обработка формы</title>
-</head>
-<body>
-    <?php
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        
-        $email = $_POST['email'] ?? '';
-        $password = $_POST['password'] ?? '';
-        $username = htmlspecialchars($_POST['username'] ?? '');
-        $gender = $_POST['gender'] ?? 'не указан';
+<?php
+session_start();
 
-        if (empty($email) || empty($password)) {
-            echo "<p style='color: red;'>Ошибка: Поля Email и Пароль обязательны для заполнения!</p>";
-            echo "<a href='index.php'>Вернуться к форме регистрации</a>";
-        } else {
-            echo "<h2>Регистрация прошла успешно!</h2>";
-            echo "<p>Здравствуйте, " . $username . ".</p>";
-            echo "<p>Ваш email: " . htmlspecialchars($email) . "</p>";
-            echo "<p>Ваш пол: " . $gender . "</p>";
-        }
-    } else {
-        echo "<p>Доступ запрещен. Пожалуйста, используйте форму для отправки данных.</p>";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    $num1 = $_POST['num1'] ?? null;
+    $num2 = $_POST['num2'] ?? null;
+    $operation = $_POST['operation'] ?? null;
+
+    if (!is_numeric($num1) || !is_numeric($num2)) {
+        $_SESSION['calc_error'] = "Пожалуйста, введите числовые значения.";
+        header('Location: index.php');
+        exit;
     }
-    ?>
-</body>
-</html>
+
+    $num1 = (float)$num1;
+    $num2 = (float)$num2;
+    $result = null;
+
+    switch ($operation) {
+        case '+':
+            $result = $num1 + $num2;
+            break;
+        case '-':
+            $result = $num1 - $num2;
+            break;
+        case '*':
+            $result = $num1 * $num2;
+            break;
+        case '/':
+            if ($num2 == 0) {
+                $_SESSION['calc_error'] = "Ошибка: Деление на ноль невозможно!";
+            } else {
+                $result = $num1 / $num2;
+            }
+            break;
+        default:
+            $_SESSION['calc_error'] = "Выберите корректную операцию.";
+    }
+
+    if (isset($result)) {
+        $_SESSION['calc_result'] = $result;
+    }
+    
+    header('Location: index.php');
+    exit;
+} else {
+    header('Location: index.php');
+    exit;
+}
+?>
